@@ -11,9 +11,6 @@
   "scripts": [
     "/scripts/simple-stealth.js"
   ],
-  "styles": [
-    /*"/styles/simple-stealth.css"*/
-  ],
 
   "languages": [
     {
@@ -26,5 +23,7 @@
       "name": "English",
       "path": "lang/en.json"
     }
-  ]
+  ],
+  "manifest": "https://raw.githubusercontent.com/CarnVanBeck/vtt-simple-stealth/main/module.json",
+  "download": "https://github.com/CarnVanBeck/vtt-simple-stealth/archive/v0.5.zip"
 }
