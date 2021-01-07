@@ -1,0 +1,30 @@
+{
+  "name": "vtt-simple-stealth",
+  "title": "Simple Stealth",
+  "description": "Allows you to track and roll stealth checks on tokens",
+  "version": "0.5",
+  "minimumCoreVersion": "0.7.9",
+  "compatibleCoreVersion": "0.7.9",
+
+  "author": "CarnVanBeck",
+  "systems": [ "dnd5e" ],
+  "scripts": [
+    "/scripts/simple-stealth.js"
+  ],
+  "styles": [
+    /*"/styles/simple-stealth.css"*/
+  ],
+
+  "languages": [
+    {
+      "lang": "de",
+      "name": "German",
+      "path": "lang/de.json"
+    },
+    {
+      "lang": "en",
+      "name": "English",
+      "path": "lang/en.json"
+    }
+  ]
+}

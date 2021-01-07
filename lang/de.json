@@ -1,0 +1,10 @@
+{
+  "settings.fieldPosition": "Feld Position",
+  "settings.fieldHint": "Die Position relativ zum Token, wo das Heimlichkeitsfeld angezeigt werden soll.",
+  "settings.position.left": "Links",
+  "settings.position.right": "Rechts",
+  "settings.position.top": "Oben",
+  "settings.position.bottom": "Unten",
+
+  "notification.noStealthAttribute": "Dieser Charakter hat keine Ressource mit dem Namen "
+}

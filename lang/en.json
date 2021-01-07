@@ -1,0 +1,10 @@
+{
+  "settings.fieldPosition": "Field position",
+  "settings.fieldHint": "The position relativ to the token, where the stealth field should be displayed.",
+  "settings.position.left": "left",
+  "settings.position.right": "right",
+  "settings.position.top": "top",
+  "settings.position.bottom": "bottom",
+
+  "notification.noStealthAttribute": "This actor is missing a resource called "
+}
