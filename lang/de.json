@@ -1,10 +1,11 @@
 {
-  "settings.fieldPosition": "Feld Position",
-  "settings.fieldHint": "Die Position relativ zum Token, wo das Heimlichkeitsfeld angezeigt werden soll.",
-  "settings.position.left": "Links",
-  "settings.position.right": "Rechts",
-  "settings.position.top": "Oben",
-  "settings.position.bottom": "Unten",
-
-  "notification.noStealthAttribute": "Dieser Charakter hat keine Ressource mit dem Namen "
+  "ResTrack.moduleName": "Resource Tracker",
+  "ResTrack.settings.trackerPosition": "Tracker Position",
+  "ResTrack.settings.trackerPositionHint": "Auf welcher Seite des Tokens sollen die Tracker angezeigt werden?",
+  "ResTrack.settings.trackerPositionLeft": "Links",
+  "ResTrack.settings.trackerPositionRight": "Rechts",
+  "ResTrack.settings.token.trackResourceHint": "Konfigurere zusätzlichen Ressourcen du nachverfolgen möchtest.",
+  "ResTrack.settings.token.addCustom": "Du kannst dem Token benutzerdefinierte Ressourcen zur Nachverfolgung hinzufügen. (Du kannst sie abgehakt lassen, wenn du sie nicht brauchst, sie werden nur hinzugefügt wenn sie angehakt sind.",
+  "ResTrack.settings.token.addCustomPlaceholder": "Name deiner Ressource",
+  "ResTrack.settings.token.addCustomIconPlaceholder": "Bildpfad"
 }
