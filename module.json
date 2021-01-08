@@ -1,7 +1,7 @@
 {
-  "name": "vtt-simple-stealth",
-  "title": "Simple Stealth",
-  "description": "Allows you to track and roll stealth checks on tokens",
+  "name": "vtt-resource-tracker",
+  "title": "Resource Tracker",
+  "description": "Allows you to track resources on the token hud",
   "version": "0.5",
   "minimumCoreVersion": "0.7.9",
   "compatibleCoreVersion": "0.7.9",
@@ -9,7 +9,7 @@
   "author": "CarnVanBeck",
   "systems": [ "dnd5e" ],
   "scripts": [
-    "/scripts/simple-stealth.js"
+    "/scripts/resource-tracker.js"
   ],
 
   "languages": [
@@ -24,6 +24,6 @@
       "path": "lang/en.json"
     }
   ],
-  "manifest": "https://raw.githubusercontent.com/CarnVanBeck/vtt-simple-stealth/main/module.json",
-  "download": "https://github.com/CarnVanBeck/vtt-simple-stealth/archive/v0.5.zip"
+  "manifest": "https://raw.githubusercontent.com/CarnVanBeck/vtt-resource-tracker/main/module.json",
+  "download": "https://github.com/CarnVanBeck/vtt-resource-tracker/archive/v0.5.zip"
 }
