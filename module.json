@@ -11,7 +11,9 @@
   "scripts": [
     "/scripts/resource-tracker.js"
   ],
-
+  "styles": [
+    "/styles/resource-tracker.css"
+  ],
   "languages": [
     {
       "lang": "de",
