@@ -2,7 +2,7 @@
   "name": "vtt-resource-tracker",
   "title": "Resource Tracker",
   "description": "Allows you to track resources on the token hud",
-  "version": "0.5",
+  "version": "0.7",
   "minimumCoreVersion": "0.7.9",
   "compatibleCoreVersion": "0.7.9",
 

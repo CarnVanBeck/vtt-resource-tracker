@@ -121,6 +121,38 @@ class resourceTracker {
             resourceTracker.appendTrackField(html, entity, `restrack_custom_${nextCustom}`, null);
         });
 
+        //handle add custom resource
+        html.find('[id="restrack_addCustom"]').on('click', (e) => {
+            let nextCustom = 0;
+            //find the next free number
+            if (entity.token.data.flags.hasOwnProperty(RESTRACK_MODULENAME)) {
+                for (const [key, res] of Object.entries(entity.token.data.flags[RESTRACK_MODULENAME])) {
+                    if (key.includes('restrack_custom_')) {
+                        if (key.replace('restrack_custom_', '') == nextCustom) {
+                            nextCustom++;
+                        }
+                        else {
+                            break;
+                        }
+                    }
+                }
+            }
+
+            resourceTracker.appendTrackField(html, entity, `restrack_custom_${nextCustom}`, null);
+        });
+
+        // handle image click
+        html.find('img[data-edit=img][data-name$=_icon]').on('click', () => {
+            try {
+                const content = await FilePicker.browse('');
+                console.log(`${RESTRACK_MODULENAME} |`, content.files);
+            } catch (err) {
+                //this._tokenImages = [];
+                ui.notifications.error(err);
+            }
+            //return this._tokenImages;
+        });
+
         // handle submit
         html.find('button[type=submit]').on('click', () => {
             html.find($('input[id^="restrack_resource_"]')).each(function () {
@@ -162,7 +194,8 @@ class resourceTracker {
         if (key.includes('restrack_custom_')) {
             let customLabel = entity.token.getFlag(RESTRACK_MODULENAME, key)?.label ?? '';
             let resourceName = `<input type="text" data-name="${key}" placeholder="${game.i18n.localize('ResTrack.settings.token.addCustomPlaceholder')}" value="${customLabel}"/>`;
-            let resourceIcon = `<input type="text" data-name="${key + '_icon'}" placeholder="${game.i18n.localize('ResTrack.settings.token.addCustomIconPlaceholder')}" value="${res?.icon ?? ''}" />`;
+            let resourceIcon = `<img src="${res?.icon ?? ''}" data-name="${key + '_icon'}" data-edit="img" width="36" height="36" />`;
+            //let resourceIcon = `<input type="text" data-name="${key + '_icon'}" placeholder="${game.i18n.localize('ResTrack.settings.token.addCustomIconPlaceholder')}" value="${res?.icon ?? ''}" />`;
 
             resourceLabel = $(resourceName + resourceIcon);
         }
