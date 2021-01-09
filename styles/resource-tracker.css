@@ -7,6 +7,10 @@
 	flex: 0 !important;
 }
 
+.resource-tracker-icon img {
+	flex: 0;
+}
+
 .resource-tracker-column {
 	padding-top: 13px;
 	width: 120px;
