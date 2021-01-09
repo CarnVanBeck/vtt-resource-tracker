@@ -14,6 +14,16 @@ Tracked resources can be modified in the token hud
 
 
 ## Compatibility
-[5eSheet-resourcesPlus](https://github.com/ardittristan/5eSheet-resourcesPlus)
+[5e-Sheet Resources Plus](https://github.com/ardittristan/5eSheet-resourcesPlus)
+You can use resourcesPlus to add a additional resource, all of them can be tracked, even if you remove the module again, resources you have added with it will stay.
+<details>
+  <summary>Image!</summary>
+  ![Tracking with 5e-Sheet Resources Plus](screenshot_trackingWithResourcePlus.png)
+</details>
 
-You can also use resourcesPlus to add a additional resource and then remove the module again, the resource will stay on the actor.
+[FVTT - Token Info Icons](https://github.com/jopeek/fvtt-token-info-icons)
+You can use both, but you should select different sides for both modules.
+<details>
+  <summary>Image!</summary>
+  ![Tracking with FVTT - Token Info Icons](screenshot_trackingWithTokenInfo.png)
+</details>
