@@ -2,14 +2,19 @@ const RESTRACK_MODULENAME = 'vtt-resource-tracker';
 const RESTRACK_POSITION_SETTING = 'tracker-position'
 class resourceTracker {
     static async addTrackFields(app, html, data) {
+        console.log(`${RESTRACK_MODULENAME} - app |`, app);
+        console.log(`${RESTRACK_MODULENAME} - data |`, data);
+        if (!app.object.data.flags || Object.keys(app.object.data.flags).length === 0 || !app.object.data.flags.hasOwnProperty(RESTRACK_MODULENAME)) {
+            return;
+        }
+
         let position = game.settings.get(RESTRACK_MODULENAME, RESTRACK_POSITION_SETTING);
 
-        let entity = app.object;
 
         let actor = canvas.tokens.get(data._id).actor;
         let newdiv = $('<div class="resource-tracker-container">');
         let recources = $(`<div class="col resource-tracker-column resource-tracker-column-${position}"></div>`);
-        for (const [key, res] of Object.entries(entity.data.flags[RESTRACK_MODULENAME])) {
+        for (const [key, res] of Object.entries(app.object.data.flags[RESTRACK_MODULENAME])) {
             let row = $('<div class="resource-tracker-row"></div>');
 
 
@@ -19,7 +24,7 @@ class resourceTracker {
             let icon;
 
             if (key.includes('restrack_custom_')) {
-                let res = entity.getFlag(RESTRACK_MODULENAME, key);
+                let res = app.object.getFlag(RESTRACK_MODULENAME, key);
                 value = res.value;
                 label = res.label;
                 icon = res.icon;
@@ -53,7 +58,7 @@ class resourceTracker {
             let value = $(e.target).val();
 
             if (key.includes('restrack_custom_')) {
-                entity.data.flags[RESTRACK_MODULENAME][key].value = value;
+                app.object.data.flags[RESTRACK_MODULENAME][key].value = value;
             }
             else {
                 actor.data.data.resources[key].value = value;
@@ -63,6 +68,7 @@ class resourceTracker {
     }
 
     static async injectSettings(entity, html) {
+        console.log(`${RESTRACK_MODULENAME} - entity |`, entity);
         if (!entity || !entity.actor || !entity.token) {
             return;
         }
@@ -73,15 +79,23 @@ class resourceTracker {
         let additionalHtml = $(`<h3>${game.i18n.localize('ResTrack.moduleName')}</h3><p class="notes">${game.i18n.localize('ResTrack.settings.token.trackResourceHint')}</p>`);
         html.find(`.tab[data-tab="resources"]`).append(additionalHtml);
 
+        let excludeResources = [];
+
+        //add custom resources from token if any exist
+        if (Object.keys(entity.token.data.flags).length > 0 && entity.token.data.flags.hasOwnProperty(RESTRACK_MODULENAME)) {
+            for (const [key, res] of Object.entries(entity.token.data.flags[RESTRACK_MODULENAME])) {
+                resourceTracker.appendTrackField(html, entity, key, res);
+                excludeResources.push(key);
+            }
+        }
+
         //add resources from actor (only for PCs)
         if (entity.actor.data.type == 'character') {
             for (const [key, res] of Object.entries(entity.actor.data.data.resources)) {
-                resourceTracker.appendTrackField(html, entity, key, res);
+                if (!excludeResources.includes(key)) {
+                    resourceTracker.appendTrackField(html, entity, key, res);
+                }
             }
-        }
-        //add custom resources from token
-        for (const [key, res] of Object.entries(entity.token.data.flags[RESTRACK_MODULENAME])) {
-            resourceTracker.appendTrackField(html, entity, key, res);
         }
 
         //create custom resource tracking
@@ -91,13 +105,15 @@ class resourceTracker {
         html.find('[id="restrack_addCustom"]').on('click', (e) => {
             let nextCustom = 0;
             //find the next free number
-            for (const [key, res] of Object.entries(entity.token.data.flags[RESTRACK_MODULENAME])) {
-                if (key.includes('restrack_custom_')) {
-                    if (key.replace('restrack_custom_', '') == nextCustom) {
-                        nextCustom++;
-                    }
-                    else {
-                        break;
+            if (entity.token.data.flags.hasOwnProperty(RESTRACK_MODULENAME)) {
+                for (const [key, res] of Object.entries(entity.token.data.flags[RESTRACK_MODULENAME])) {
+                    if (key.includes('restrack_custom_')) {
+                        if (key.replace('restrack_custom_', '') == nextCustom) {
+                            nextCustom++;
+                        }
+                        else {
+                            break;
+                        }
                     }
                 }
             }
@@ -146,7 +162,7 @@ class resourceTracker {
         if (key.includes('restrack_custom_')) {
             let customLabel = entity.token.getFlag(RESTRACK_MODULENAME, key)?.label ?? '';
             let resourceName = `<input type="text" data-name="${key}" placeholder="${game.i18n.localize('ResTrack.settings.token.addCustomPlaceholder')}" value="${customLabel}"/>`;
-            let resourceIcon = `<input type="text" data-name="${key + '_icon'}" placeholder="${game.i18n.localize('ResTrack.settings.token.addCustomIconPlaceholder')}" value="${res.icon}" />`;
+            let resourceIcon = `<input type="text" data-name="${key + '_icon'}" placeholder="${game.i18n.localize('ResTrack.settings.token.addCustomIconPlaceholder')}" value="${res?.icon ?? ''}" />`;
 
             resourceLabel = $(resourceName + resourceIcon);
         }
