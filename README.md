@@ -2,6 +2,7 @@
 This module allows you to track additional resources from the actor and also add custom resources on every token.
 The custom resources are not persistent (they are cleared on every refresh), to have a resource stay after a refresh, it needs to be assigned to a actor resource.
 
+I use it, to track stealth rolls on my tokens.
 
 Existing resources can be selected in the token config
 ![Existing resources can be selected in the token config](screenshots/screenshot_tokenConfig.png)
