@@ -26,6 +26,7 @@
       "path": "lang/en.json"
     }
   ],
-  "manifest": "https://raw.githubusercontent.com/CarnVanBeck/vtt-resource-tracker/main/module.json",
-  "download": "https://github.com/CarnVanBeck/vtt-resource-tracker/archive/v0.5.zip"
+  "url": "https://github.com/CarnVanBeck/vtt-resource-tracker",
+  "manifest": "https://raw.githubusercontent.com/CarnVanBeck/vtt-resource-tracker/master/module.json",
+  "download": "https://github.com/CarnVanBeck/vtt-resource-tracker/releases/download/v0.6/Beta_v0.6.zip"
 }
