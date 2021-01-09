@@ -5,12 +5,15 @@ The custom resources are not persistent (they are cleared on every refresh), to 
 I use it, to track stealth rolls on my tokens.
 
 Existing resources can be selected in the token config
+
 ![Existing resources can be selected in the token config](screenshots/screenshot_tokenConfig.png)
 
 New resources (non-persistent) can be added as well
+
 ![Existing resources can be selected in the token config](screenshots/screenshot_tokenConfigWithCustomResource.png)
 
 Tracked resources can be modified in the token hud
+
 ![Existing resources can be selected in the token config](screenshots/screenshot_trackedResource.png)
 
 
