@@ -1,5 +1,7 @@
 const RESTRACK_MODULENAME = 'vtt-resource-tracker';
 const RESTRACK_POSITION_SETTING = 'tracker-position'
+const RESTRACK_DEFAULT_ICON = 'icons/svg/cowled.svg';
+
 class resourceTracker {
     static async addTrackFields(app, html, data) {
         console.log(`${RESTRACK_MODULENAME} - app |`, app);
@@ -17,15 +19,13 @@ class resourceTracker {
         for (const [key, res] of Object.entries(app.object.data.flags[RESTRACK_MODULENAME])) {
             let row = $('<div class="resource-tracker-row"></div>');
 
-
             let value;
             let max;
             let label;
             let icon;
 
             if (key.includes('restrack_custom_')) {
-                let res = app.object.getFlag(RESTRACK_MODULENAME, key);
-                value = res.value;
+                value = res.val;
                 label = res.label;
                 icon = res.icon;
             }
@@ -41,7 +41,7 @@ class resourceTracker {
                 $.get(icon)
                     .done(function () {
                         let resourceIcon = $(`<img src="${icon}" width="36" height="36" title="${label}">`);
-                        row.addClass('resource-tracker-row-withIcon');
+                        row.addClass('resource-tracker-row-withIcon').addClass('resource-tracker-icon');
                         resourceInput.before(resourceIcon);
                     })
             }
@@ -58,12 +58,13 @@ class resourceTracker {
             let value = $(e.target).val();
 
             if (key.includes('restrack_custom_')) {
-                app.object.data.flags[RESTRACK_MODULENAME][key].value = value;
+                let res = app.object.getFlag(RESTRACK_MODULENAME, key);
+                res.val = value;
+                app.object.setFlag(RESTRACK_MODULENAME, key, res)
             }
             else {
                 actor.data.data.resources[key].value = value;
             }
-            //actor.data.data.resources[resProperty].value = e.target.value;
         })
     }
 
@@ -118,39 +119,7 @@ class resourceTracker {
                 }
             }
 
-            resourceTracker.appendTrackField(html, entity, `restrack_custom_${nextCustom}`, null);
-        });
-
-        //handle add custom resource
-        html.find('[id="restrack_addCustom"]').on('click', (e) => {
-            let nextCustom = 0;
-            //find the next free number
-            if (entity.token.data.flags.hasOwnProperty(RESTRACK_MODULENAME)) {
-                for (const [key, res] of Object.entries(entity.token.data.flags[RESTRACK_MODULENAME])) {
-                    if (key.includes('restrack_custom_')) {
-                        if (key.replace('restrack_custom_', '') == nextCustom) {
-                            nextCustom++;
-                        }
-                        else {
-                            break;
-                        }
-                    }
-                }
-            }
-
-            resourceTracker.appendTrackField(html, entity, `restrack_custom_${nextCustom}`, null);
-        });
-
-        // handle image click
-        html.find('img[data-edit=img][data-name$=_icon]').on('click', () => {
-            try {
-                const content = await FilePicker.browse('');
-                console.log(`${RESTRACK_MODULENAME} |`, content.files);
-            } catch (err) {
-                //this._tokenImages = [];
-                ui.notifications.error(err);
-            }
-            //return this._tokenImages;
+            resourceTracker.appendTrackField(html, entity, `restrack_custom_${nextCustom}`, { 'icon': RESTRACK_DEFAULT_ICON });
         });
 
         // handle submit
@@ -165,9 +134,9 @@ class resourceTracker {
 
                     if (key.includes('restrack_custom_')) {
                         res.label = html.find(`input[data-name="${key}"]`).val();
-                        res.value = null;
+                        res.val = null;
                         res.isCustom = true;
-                        res.icon = html.find(`input[data-name="${key + '_icon'}"]`).val();
+                        res.icon = html.find(`img[data-key="${key}"]`).attr('src');
                     }
                     entity.token.setFlag(RESTRACK_MODULENAME, key, res);
                 }
@@ -177,6 +146,25 @@ class resourceTracker {
             });
         });
     }
+
+    /** @private */
+    static async getResourceImg(html, key, imgPath) {
+        try {
+            new FilePicker({
+                type: "image",
+                current: imgPath,
+                callback: path => {
+                    html.find(`img[data-key=${key}]`).attr('src', path);
+                }
+            }).browse(imgPath);
+
+        } catch (err) {
+            //this._tokenImages = [];
+            ui.notifications.error(err);
+        }
+        return imgPath;
+    }
+
 
     /** @private */
     static async appendTrackField(html, entity, key, res) {
@@ -190,23 +178,28 @@ class resourceTracker {
 
         let checked = entity.token.getFlag(RESTRACK_MODULENAME, key)?.tracked ?? false;
 
-        let resourceLabel;
         if (key.includes('restrack_custom_')) {
+            resourceContainer.addClass('resource-tracker-icon');
             let customLabel = entity.token.getFlag(RESTRACK_MODULENAME, key)?.label ?? '';
-            let resourceName = `<input type="text" data-name="${key}" placeholder="${game.i18n.localize('ResTrack.settings.token.addCustomPlaceholder')}" value="${customLabel}"/>`;
-            let resourceIcon = `<img src="${res?.icon ?? ''}" data-name="${key + '_icon'}" data-edit="img" width="36" height="36" />`;
-            //let resourceIcon = `<input type="text" data-name="${key + '_icon'}" placeholder="${game.i18n.localize('ResTrack.settings.token.addCustomIconPlaceholder')}" value="${res?.icon ?? ''}" />`;
+            let resourceName = $(`<input type="text" data-name="${key}" placeholder="${game.i18n.localize('ResTrack.settings.token.addCustomPlaceholder')}" value="${customLabel}"/>`);
+            let resourceIcon = $(`<img src="${res?.icon ?? ''}" data-key="${key}" data-name="${key + '_icon'}" data-edit="img" width="36" height="36" />`);
 
-            resourceLabel = $(resourceName + resourceIcon);
+            resourceIcon.on('click', (e) => {
+                let imgPath = $(e.target).attr('src');
+
+                resourceTracker.getResourceImg(html, $(e.target).attr('data-key'), imgPath);
+            });
+            resourceContainer.append(resourceName);
+            resourceContainer.append(resourceIcon);
         }
         else {
-            resourceLabel = $(`<label>${localizedName + (res && res.label && res.label.length > 0 ? ` (${res.label})` : '')}</label>`);
+            resourceContainer.append($(`<label>${localizedName + (res && res.label && res.label.length > 0 ? ` (${res.label})` : '')}</label>`));
         }
 
         let resourceFormfield = $('<div class="form-fields"></div>');
         let resourceCheckbox = $(`<input type="checkbox" id="restrack_resource_${key}" data-name="${key}" ${checked ? 'checked' : ''} />`);
         resourceFormfield.append(resourceCheckbox);
-        resourceContainer.append(resourceLabel).append(resourceFormfield);
+        resourceContainer.append(resourceFormfield);
         html.find(`.tab[data-tab="resources"]`).append(resourceContainer);
     }
 }
