@@ -1,8 +1,8 @@
 # vtt-resource-tracker
 This module allows you to track additional resources from the actor and also add custom resources on every token.
-The custom resources are not persistent (they are cleared on every refresh), to have a resource stay after a refresh, it needs to be assigned to a actor resource.
+The value of a custom resources is not persistent (it is cleared on every refresh), to have a resource value stay after a refresh, it needs to be assigned to a resource of an actor.
 
-I use it, to track stealth rolls on my tokens.
+It can be used to track stealth roles of PCs or NPCs to quickly store the value on the Token HUD.
 
 Existing resources can be selected in the token config
 
