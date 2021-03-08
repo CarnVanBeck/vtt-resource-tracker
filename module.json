@@ -2,12 +2,15 @@
   "name": "vtt-resource-tracker",
   "title": "Resource Tracker",
   "description": "Allows you to track resources on the token hud",
-  "version": "0.7.2",
+  "version": "0.7.5",
   "minimumCoreVersion": "0.7.9",
   "compatibleCoreVersion": "0.7.9",
 
   "author": "CarnVanBeck",
-  "systems": [ "dnd5e" ],
+  "systems": [ 
+    "dnd5e", 
+    "pf1" 
+  ],
   "scripts": [
     "/scripts/resource-tracker.js"
   ],
@@ -28,5 +31,5 @@
   ],
   "url": "https://github.com/CarnVanBeck/vtt-resource-tracker",
   "manifest": "https://raw.githubusercontent.com/CarnVanBeck/vtt-resource-tracker/master/module.json",
-  "download": "https://github.com/CarnVanBeck/vtt-resource-tracker/archive/v0.7.2.zip"
+  "download": "https://github.com/CarnVanBeck/vtt-resource-tracker/archive/v0.7.5.zip"
 }

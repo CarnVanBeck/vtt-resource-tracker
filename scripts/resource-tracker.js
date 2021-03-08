@@ -4,14 +4,11 @@ const RESTRACK_DEFAULT_ICON = 'icons/svg/cowled.svg';
 
 class resourceTracker {
     static async addTrackFields(app, html, data) {
-        console.log(`${RESTRACK_MODULENAME} - app |`, app);
-        console.log(`${RESTRACK_MODULENAME} - data |`, data);
         if (!app.object.data.flags || Object.keys(app.object.data.flags).length === 0 || !app.object.data.flags.hasOwnProperty(RESTRACK_MODULENAME)) {
             return;
         }
 
         let position = game.settings.get(RESTRACK_MODULENAME, RESTRACK_POSITION_SETTING);
-
 
         let actor = canvas.tokens.get(data._id).actor;
         let newdiv = $('<div class="resource-tracker-container">');
@@ -69,7 +66,6 @@ class resourceTracker {
     }
 
     static async injectSettings(entity, html) {
-        console.log(`${RESTRACK_MODULENAME} - entity |`, entity);
         if (!entity || !entity.actor || !entity.token) {
             return;
         }
@@ -168,11 +164,12 @@ class resourceTracker {
 
     /** @private */
     static async appendTrackField(html, entity, key, res) {
+        const localizationPrefix = game.data.system.data.name.toUpperCase();
         let resourceContainer = $('<div class="form-group"></div>');
 
-        let localizedName = game.i18n.localize('DND5E.Resource' + key.titleCase());
+        let localizedName = game.i18n.localize(`${localizationPrefix}.Resource${key.titleCase()}`);
         //fallback if a resource is used, that has no localized name
-        if (localizedName.includes('DND5E.Resource')) {
+        if (localizedName.includes(`${localizationPrefix}.Resource`)) {
             localizedName = key;
         }
 
