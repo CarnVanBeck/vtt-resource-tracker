@@ -2,20 +2,9 @@
   "name": "vtt-resource-tracker",
   "title": "Resource Tracker",
   "description": "Allows you to track resources on the token hud",
+  "version": "0.8.1",
   "author": "CarnVanBeck",
-  "authors": [],
-  "url": "https://github.com/CarnVanBeck/vtt-resource-tracker",
-  "flags": {},
-  "version": "0.8",
-  "minimumCoreVersion": "0.7.9",
-  "compatibleCoreVersion": "0.8.9",
-  "scripts": [
-    "/scripts/resource-tracker.js"
-  ],
-  "esmodules": [],
-  "styles": [
-    "/styles/resource-tracker.css"
-  ],
+  "socket": false,
   "languages": [
     {
       "lang": "de",
@@ -29,15 +18,18 @@
     }
   ],
   "packs": [],
-  "system": [
-    "dnd5e",
-    "pf1"
+  "esmodules": [],
+  "scripts": [
+    "/scripts/resource-tracker.js"
   ],
-  "dependencies": [],
-  "socket": false,
+  "styles": [
+    "/styles/resource-tracker.css"
+  ],
+  "url": "https://github.com/CarnVanBeck/vtt-resource-tracker",
+  "download": "https://github.com/CarnVanBeck/vtt-resource-tracker/archive/v0.8.1.zip",
   "manifest": "https://raw.githubusercontent.com/CarnVanBeck/vtt-resource-tracker/master/module.json",
-  "download": "https://github.com/CarnVanBeck/vtt-resource-tracker/archive/v0.7.6.zip",
-  "protected": false,
-  "coreTranslation": false,
-  "library": false
+  "bugs": "https://github.com/CarnVanBeck/vtt-resource-tracker/issues",
+  "allowBugReporter": true,
+  "minimumCoreVersion": "0.7.9",
+  "compatibleCoreVersion": "0.8.9"
 }
