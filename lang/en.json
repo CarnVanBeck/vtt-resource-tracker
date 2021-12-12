@@ -1,10 +1,13 @@
 {
   "ResTrack.moduleName": "Resource Tracker",
+
   "ResTrack.settings.trackerPosition": "Tracker Position",
   "ResTrack.settings.trackerPositionHint": "Which side of the token should the info appear on?",
   "ResTrack.settings.trackerPositionLeft": "left",
   "ResTrack.settings.trackerPositionRight": "right",
+
   "ResTrack.settings.token.trackResourceHint": "Configure additional resources you want to track.",
+  "ResTrack.settings.token.newResource": "New resource",
   "ResTrack.settings.token.addCustom": "You can add custom resources to the token to track. (You can leave them unchecked if you don't need them, they are only added if checked.)",
   "ResTrack.settings.token.addCustomPlaceholder": "Name of you resource",
   "ResTrack.settings.token.addCustomIconPlaceholder": "Image path"

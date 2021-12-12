@@ -4,24 +4,33 @@ const RESTRACK_DEFAULT_ICON = 'icons/svg/cowled.svg';
 
 class resourceTracker {
     static async addTrackFields(app, html, data) {
-        if (!app.object.data.flags || Object.keys(app.object.data.flags).length === 0 || !app.object.data.flags.hasOwnProperty(RESTRACK_MODULENAME)) {
+        let updateActor = app.object.document.data.actorLink;
+        let flags = app.object.document.actor.data.flags[RESTRACK_MODULENAME];
+
+        if(!flags || Object.entries(flags).length <= 0) {
             return;
         }
 
         let position = game.settings.get(RESTRACK_MODULENAME, RESTRACK_POSITION_SETTING);
-
         let actor = canvas.tokens.get(data._id).actor;
         let newdiv = $('<div class="resource-tracker-container">');
         let recources = $(`<div class="col resource-tracker-column resource-tracker-column-${position}"></div>`);
-        for (const [key, res] of Object.entries(app.object.data.flags[RESTRACK_MODULENAME])) {
+
+        for (const [key, res] of Object.entries(flags)) {
             let row = $('<div class="resource-tracker-row"></div>');
 
+            let index;
             let value;
             let max;
             let label;
             let icon;
 
+            if(!updateActor) {
+                res.val = app.object.getFlag(RESTRACK_MODULENAME, key)?.val;
+            }
+
             if (key.includes('restrack_custom_')) {
+                index = key.replace('restrack_custom_', '');
                 value = res.val;
                 label = res.label;
                 icon = res.icon;
@@ -40,7 +49,7 @@ class resourceTracker {
                         let resourceIcon = $(`<img src="${icon}" width="36" height="36" title="${label}">`);
                         row.addClass('resource-tracker-row-withIcon').addClass('resource-tracker-icon');
                         resourceInput.before(resourceIcon);
-                    })
+                    });
             }
 
             row.append(resourceInput);
@@ -55,9 +64,16 @@ class resourceTracker {
             let value = $(e.target).val();
 
             if (key.includes('restrack_custom_')) {
-                let res = app.object.getFlag(RESTRACK_MODULENAME, key);
-                res.val = value;
-                app.object.setFlag(RESTRACK_MODULENAME, key, res)
+                let res = {
+                    val: value
+                };
+                
+                if(updateActor) {
+                    app.object.document.actor.setFlag(RESTRACK_MODULENAME, key, res);
+                }
+                else {
+                    app.object.document.setFlag(RESTRACK_MODULENAME, key, res);
+                }
             }
             else {
                 actor.data.data.resources[key].value = value;
@@ -78,9 +94,11 @@ class resourceTracker {
 
         let excludeResources = [];
 
+        let flags = entity.token.actor.data.flags[RESTRACK_MODULENAME];
+
         //add custom resources from token if any exist
-        if (Object.keys(entity.token.data.flags).length > 0 && entity.token.data.flags.hasOwnProperty(RESTRACK_MODULENAME)) {
-            for (const [key, res] of Object.entries(entity.token.data.flags[RESTRACK_MODULENAME])) {
+        if (flags && Object.entries(flags).length > 0) {
+            for (const [key, res] of Object.entries(flags)) {
                 resourceTracker.appendTrackField(html, entity, key, res);
                 excludeResources.push(key);
             }
@@ -96,14 +114,14 @@ class resourceTracker {
         }
 
         //create custom resource tracking
-        html.find(`.tab[data-tab="resources"]`).append(`<hr /><p class="notes">${game.i18n.localize('ResTrack.settings.token.addCustom')}<i id="restrack_addCustom" class="fas fa-plus"></i></p>`);
+        html.find(`.tab[data-tab="resources"]`).append(`<hr /><p class="notes">${game.i18n.localize('ResTrack.settings.token.addCustom')}</br ><i id="restrack_addCustom" class="fas fa-plus">${game.i18n.localize('ResTrack.settings.token.newResource')}&nbsp;</i></p>`);
 
         //handle add custom resource
         html.find('[id="restrack_addCustom"]').on('click', (e) => {
             let nextCustom = 0;
             //find the next free number
-            if (entity.token.data.flags.hasOwnProperty(RESTRACK_MODULENAME)) {
-                for (const [key, res] of Object.entries(entity.token.data.flags[RESTRACK_MODULENAME])) {
+            if (flags && Object.entries(flags).length > 0) {
+                for (const [key, res] of Object.entries(flags)) {
                     if (key.includes('restrack_custom_')) {
                         if (key.replace('restrack_custom_', '') == nextCustom) {
                             nextCustom++;
@@ -115,32 +133,51 @@ class resourceTracker {
                 }
             }
 
+            //insert empty resource, so more than one can be configured at the same time
+            let res = {
+                'tracked': true,
+                'index': nextCustom,
+                'label': '',
+                'val': '',
+                'isCustom': true,
+                'icon': ''
+            };
+            
+            entity.token.actor.setFlag(RESTRACK_MODULENAME, 'restrack_custom_' + nextCustom, res);
+
             resourceTracker.appendTrackField(html, entity, `restrack_custom_${nextCustom}`, { 'icon': RESTRACK_DEFAULT_ICON });
         });
 
         // handle submit
         html.find('button[type=submit]').on('click', () => {
-            html.find($('input[id^="restrack_resource_"]')).each(function () {
-                let key = $(this).attr('data-name');
-
-                if (this.checked) {
-                    let res = {
-                        'tracked': true
-                    };
-
-                    if (key.includes('restrack_custom_')) {
-                        res.label = html.find(`input[data-name="${key}"]`).val();
-                        res.val = null;
-                        res.isCustom = true;
-                        res.icon = html.find(`img[data-key="${key}"]`).attr('src');
-                    }
-                    entity.token.setFlag(RESTRACK_MODULENAME, key, res);
-                }
-                else {
-                    entity.token.unsetFlag(RESTRACK_MODULENAME, key);
-                }
-            });
+            resourceTracker.saveFlags(html, entity);            
         });
+    }
+    /** @private */
+    static async saveFlags(html, entity) {
+        for (let item of $('input[id^="restrack_resource_"]').get().reverse()) {
+            let target = entity.token.actor;
+
+            let key = $(item).attr('data-name');
+            if (item.checked) {
+                let res = {
+                    'tracked': true
+                };
+
+                if (key.includes('restrack_custom_')) {                    
+                    res.index = key.replace('restrack_custom_', '');
+                    res.label = html.find(`input[data-name="${key}"]`).val();
+                    res.val = target.getFlag(RESTRACK_MODULENAME, key)?.val ?? '';
+                    res.isCustom = true;
+                    res.icon = html.find(`img[data-key="${key}"]`).attr('src');
+                }
+                
+                await target.setFlag(RESTRACK_MODULENAME, key, res);
+            }
+            else {
+                await target.unsetFlag(RESTRACK_MODULENAME, key);
+            }
+        }
     }
 
     /** @private */
@@ -173,12 +210,11 @@ class resourceTracker {
             localizedName = key;
         }
 
-        let checked = entity.token.getFlag(RESTRACK_MODULENAME, key)?.tracked ?? false;
+        let checked = res?.tracked ?? false;
 
         if (key.includes('restrack_custom_')) {
             resourceContainer.addClass('resource-tracker-icon');
-            let customLabel = entity.token.getFlag(RESTRACK_MODULENAME, key)?.label ?? '';
-            let resourceName = $(`<input type="text" data-name="${key}" placeholder="${game.i18n.localize('ResTrack.settings.token.addCustomPlaceholder')}" value="${customLabel}"/>`);
+            let resourceName = $(`<input type="text" data-name="${key}" placeholder="${game.i18n.localize('ResTrack.settings.token.addCustomPlaceholder')}" value="${res?.label ?? ''}"/>`);
             let resourceIcon = $(`<img src="${res?.icon ?? ''}" data-key="${key}" data-name="${key + '_icon'}" data-edit="img" width="36" height="36" />`);
 
             resourceIcon.on('click', (e) => {

@@ -7,6 +7,7 @@
   "ResTrack.settings.trackerPositionRight": "Rechts",
   
   "ResTrack.settings.token.trackResourceHint": "Konfigurere zusätzlichen Ressourcen du nachverfolgen möchtest.",
+  "ResTrack.settings.token.newResource": "Neue Ressource",
   "ResTrack.settings.token.addCustom": "Du kannst dem Token benutzerdefinierte Ressourcen zur Nachverfolgung hinzufügen. (Du kannst sie abgehakt lassen, wenn du sie nicht brauchst, sie werden nur hinzugefügt wenn sie angehakt sind.)",
   "ResTrack.settings.token.addCustomPlaceholder": "Name deiner Ressource",
   "ResTrack.settings.token.addCustomIconPlaceholder": "Bildpfad"
