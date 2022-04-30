@@ -42,28 +42,32 @@ class resourceTracker {
                 max = actor.data.data.resources[key].max;
                 label = actor.data.data.resources[key].label;
             }
-            let resourceName = $(`<input type="text" class="resource-tracker-row-name" value="${label}" disabled>"</input>`);
+            //let resourceName = $(`<input type="text" class="resource-tracker-row-name" value="${label}" disabled>"</input>`);
             let resourceInput = $(`<input type="text" data-key="${key}" data-module="${RESTRACK_MODULENAME}" min="0" ${(max?.length > 0 ? 'max = "' + max + '"' : '')} placeholder="0" value="${value ?? ''}" title="${label}" />`);
+            let resourceLabel = $(`<span>${label}</span>`);
 
             if (icon && icon.length > 0) {
                 //check if image exists
                 $.get(icon)
                     .done(function () {
                         let resourceIcon = $(`<img src="${icon}" width="36" height="36" title="${label}">`);
-                        row.addClass('resource-tracker-row-withIcon').addClass('resource-tracker-icon');
-                        if (showName) {
-                            resourceName.before(resourceIcon);
-                        }
-                        else {
-                            resourceInput.before(resourceIcon);
-                        }
+                        //row.addClass('resource-tracker-row-withIcon').addClass('resource-tracker-icon');
+                        resourceLabel.before(resourceIcon);
+                        //if (showName) {
+                        //    resourceName.before(resourceIcon);
+                        //}
+                        //else {
+                        //    resourceInput.before(resourceIcon);
+                        //}
                     });
             }
-            if (showName) {
-                row.addClass('resource-tracker-row-name');
-                row.append(resourceName);
-            }
+            //if (showName) {
+            //    row.addClass('resource-tracker-row-name');
+            //    row.append(resourceName);
+            //}
             console.log(row);
+            row.addClass('resource-tracker-row-withIcon').addClass('resource-tracker-icon');
+            row.append(resourceLabel);
             row.append(resourceInput);
             recources.append(row);
         }
