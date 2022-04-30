@@ -3,7 +3,7 @@
 	flex-direction: row;
 	justify-content: flex-end;
 	align-items: center;
-	margin-right: 75px;
+	margin-right: 175px;
 	flex: 0 !important;*/
 }
 
@@ -13,7 +13,7 @@
 
 .resource-tracker-column {
 	padding-top: 13px;
-	width: 120px;
+	width: 300px;
 }
 
 .col.resource-tracker-column-left {
@@ -36,7 +36,7 @@
 	align-items: stretch;
 	width: 100%;
 	background: rgba(0, 0, 0, 0.6);
-	box-shadow: 0 0 15px #000;
+	box-shadow: 0 0 5px #000;
 	border: 1px solid #333;
 	color: #DDD;
 	height: 40px;
@@ -51,7 +51,7 @@
 	.resource-tracker-row-withIcon img {
 		display: flex;
 		align-items: center;
-		padding: 3px 0px 1px 1px;
+		padding: 3px 0px 1px 3px;
 		font-size: 1rem;
 		font-weight: 400;
 		line-height: 1.5;
@@ -71,7 +71,14 @@
 		flex: 1 1 auto;
 		width: 1%;
 		min-width: 0;
+                text-align: right;
 	}
+
+
+	.resource-tracker-row-withIcon span {
+                margin: 0px 3px 0px 3px;
+	}
+
 
 .resource-tracker-row-name {
 	font-size: 16px;
