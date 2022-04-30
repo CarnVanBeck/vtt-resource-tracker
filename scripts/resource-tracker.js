@@ -24,9 +24,10 @@ class resourceTracker {
             let max;
             let label;
             let icon;
+            let showName;
 
             if(!updateActor) {
-                res.val = app.object.getFlag(RESTRACK_MODULENAME, key)?.val;
+                res.val = app.object.document.getFlag(RESTRACK_MODULENAME, key)?.val;
             }
 
             if (key.includes('restrack_custom_')) {
@@ -34,12 +35,14 @@ class resourceTracker {
                 value = res.val;
                 label = res.label;
                 icon = res.icon;
+                showName = res.showName;
             }
             else {
                 value = actor.data.data.resources[key].value;
                 max = actor.data.data.resources[key].max;
                 label = actor.data.data.resources[key].label;
             }
+            let resourceName = $(`<input type="text" class="resource-tracker-row-name" value="${label}" disabled>"</input>`);
             let resourceInput = $(`<input type="text" data-key="${key}" data-module="${RESTRACK_MODULENAME}" min="0" ${(max?.length > 0 ? 'max = "' + max + '"' : '')} placeholder="0" value="${value ?? ''}" title="${label}" />`);
 
             if (icon && icon.length > 0) {
@@ -48,15 +51,24 @@ class resourceTracker {
                     .done(function () {
                         let resourceIcon = $(`<img src="${icon}" width="36" height="36" title="${label}">`);
                         row.addClass('resource-tracker-row-withIcon').addClass('resource-tracker-icon');
-                        resourceInput.before(resourceIcon);
+                        if (showName) {
+                            resourceName.before(resourceIcon);
+                        }
+                        else {
+                            resourceInput.before(resourceIcon);
+                        }
                     });
             }
-
+            if (showName) {
+                row.addClass('resource-tracker-row-name');
+                row.append(resourceName);
+            }
+            console.log(row);
             row.append(resourceInput);
             recources.append(row);
         }
 
-        html.find('.col.right').wrap(newdiv);
+        //html.find('.col.right').wrap(newdiv);
         html.find('.col.right').before(recources);
 
         $(`input[data-module=${RESTRACK_MODULENAME}`).focusout(async (e) => {
@@ -168,6 +180,7 @@ class resourceTracker {
                     res.index = key.replace('restrack_custom_', '');
                     res.label = html.find(`input[data-name="${key}"]`).val();
                     res.val = target.getFlag(RESTRACK_MODULENAME, key)?.val ?? '';
+                    res.showName = html.find(`input[data-name="${key}_nameToggle"]`)[0].checked;
                     res.isCustom = true;
                     res.icon = html.find(`img[data-key="${key}"]`).attr('src');
                 }
@@ -215,7 +228,8 @@ class resourceTracker {
         if (key.includes('restrack_custom_')) {
             resourceContainer.addClass('resource-tracker-icon');
             let resourceName = $(`<input type="text" data-name="${key}" placeholder="${game.i18n.localize('ResTrack.settings.token.addCustomPlaceholder')}" value="${res?.label ?? ''}"/>`);
-            let resourceIcon = $(`<img src="${res?.icon ?? ''}" data-key="${key}" data-name="${key + '_icon'}" data-edit="img" width="36" height="36" />`);
+            let resourceNameToggle = $(`<input type="checkbox" data-name="${key}_nameToggle" ${res?.showName ? 'checked' : ''} title="${game.i18n.localize('ResTrack.settings.token.alwaysShowName')}" />`);
+            let resourceIcon = $(`<img src="${res?.icon ?? ''}" data-key="${key}" data-name="${key}_icon" data-edit="img" width="36" height="36" />`);
 
             resourceIcon.on('click', (e) => {
                 let imgPath = $(e.target).attr('src');
@@ -223,6 +237,7 @@ class resourceTracker {
                 resourceTracker.getResourceImg(html, $(e.target).attr('data-key'), imgPath);
             });
             resourceContainer.append(resourceName);
+            resourceContainer.append(resourceNameToggle);
             resourceContainer.append(resourceIcon);
         }
         else {

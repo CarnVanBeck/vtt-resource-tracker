@@ -1,10 +1,10 @@
 .resource-tracker-container {
-	display: flex;
+	/*display: flex;
 	flex-direction: row;
 	justify-content: flex-end;
 	align-items: center;
 	margin-right: 75px;
-	flex: 0 !important;
+	flex: 0 !important;*/
 }
 
 .resource-tracker-icon img {
@@ -17,11 +17,11 @@
 }
 
 .col.resource-tracker-column-left {
-	left: -172px;
+	right: calc(100% + 75px);
 }
 
 .col.resource-tracker-column-right {
-	right: -200px;
+	left: calc(100% + 75px);
 }
 
 .resource-tracker-row {
@@ -72,3 +72,8 @@
 		width: 1%;
 		min-width: 0;
 	}
+
+.resource-tracker-row-name {
+	font-size: 16px;
+	white-space: nowrap;
+}
