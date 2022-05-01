@@ -1,5 +1,6 @@
 const RESTRACK_MODULENAME = 'vtt-resource-tracker';
 const RESTRACK_POSITION_SETTING = 'tracker-position'
+const RESTRACK_LABEL_SETTING = 'label-toggle';
 const RESTRACK_DEFAULT_ICON = 'icons/svg/cowled.svg';
 
 class resourceTracker {
@@ -12,6 +13,7 @@ class resourceTracker {
         }
 
         let position = game.settings.get(RESTRACK_MODULENAME, RESTRACK_POSITION_SETTING);
+        let toggleLabel = game.settings.get(RESTRACK_MODULENAME, RESTRACK_LABEL_SETTING);
         let actor = canvas.tokens.get(data._id).actor;
         let newdiv = $('<div class="resource-tracker-container">');
         let recources = $(`<div class="col resource-tracker-column resource-tracker-column-${position}"></div>`);
@@ -35,40 +37,36 @@ class resourceTracker {
                 value = res.val;
                 label = res.label;
                 icon = res.icon;
-                showName = res.showName;
             }
             else {
                 value = actor.data.data.resources[key].value;
                 max = actor.data.data.resources[key].max;
                 label = actor.data.data.resources[key].label;
             }
-            //let resourceName = $(`<input type="text" class="resource-tracker-row-name" value="${label}" disabled>"</input>`);
+            showName = res.showName;
+            
             let resourceInput = $(`<input type="text" data-key="${key}" data-module="${RESTRACK_MODULENAME}" min="0" ${(max?.length > 0 ? 'max = "' + max + '"' : '')} placeholder="0" value="${value ?? ''}" title="${label}" />`);
             let resourceLabel = $(`<span>${label}</span>`);
-
+            let resourceIcon = '';
             if (icon && icon.length > 0) {
                 //check if image exists
                 $.get(icon)
                     .done(function () {
-                        let resourceIcon = $(`<img src="${icon}" width="36" height="36" title="${label}">`);
-                        //row.addClass('resource-tracker-row-withIcon').addClass('resource-tracker-icon');
-                        resourceLabel.before(resourceIcon);
-                        //if (showName) {
-                        //    resourceName.before(resourceIcon);
-                        //}
-                        //else {
-                        //    resourceInput.before(resourceIcon);
-                        //}
+                        resourceIcon = $(`<img src="${icon}" width="36" height="36" title="${label}">`);
+                        row.addClass('resource-tracker-row-withIcon').addClass('resource-tracker-icon');
+                        if (showName && toggleLabel) {
+                            resourceLabel.before(resourceIcon);
+                        }
+                        else {
+                            resourceInput.before(resourceIcon);
+                        }
                     });
             }
-            //if (showName) {
-            //    row.addClass('resource-tracker-row-name');
-            //    row.append(resourceName);
-            //}
-            console.log(row);
-            row.addClass('resource-tracker-row-withIcon').addClass('resource-tracker-icon');
-            row.append(resourceLabel);
+            
             row.append(resourceInput);
+            if (showName && toggleLabel) {
+                resourceInput.before(resourceLabel);
+            }
             recources.append(row);
         }
 
@@ -83,12 +81,13 @@ class resourceTracker {
                 let res = {
                     val: value
                 };
-                
-                if(updateActor) {
-                    app.object.document.actor.setFlag(RESTRACK_MODULENAME, key, res);
-                }
-                else {
-                    app.object.document.setFlag(RESTRACK_MODULENAME, key, res);
+                if(app?.object?.document != null) {
+                    if(updateActor) {
+                        app.object.document.actor.setFlag(RESTRACK_MODULENAME, key, res);
+                    }
+                    else {
+                        app.object.document.setFlag(RESTRACK_MODULENAME, key, res);
+                    }
                 }
             }
             else {
@@ -104,6 +103,10 @@ class resourceTracker {
 
         // fix config height
         html.height("auto");
+
+        //get label option from settings
+        let toggleLabel = game.settings.get(RESTRACK_MODULENAME, RESTRACK_LABEL_SETTING);
+
         // add element to config screen
         let additionalHtml = $(`<h3>${game.i18n.localize('ResTrack.moduleName')}</h3><p class="notes">${game.i18n.localize('ResTrack.settings.token.trackResourceHint')}</p>`);
         html.find(`.tab[data-tab="resources"]`).append(additionalHtml);
@@ -182,12 +185,17 @@ class resourceTracker {
 
                 if (key.includes('restrack_custom_')) {                    
                     res.index = key.replace('restrack_custom_', '');
-                    res.label = html.find(`input[data-name="${key}"]`).val();
                     res.val = target.getFlag(RESTRACK_MODULENAME, key)?.val ?? '';
-                    res.showName = html.find(`input[data-name="${key}_nameToggle"]`)[0].checked;
+                    res.label = html.find(`input[data-name="${key}"]`).val();
                     res.isCustom = true;
-                    res.icon = html.find(`img[data-key="${key}"]`).attr('src');
                 }
+                else {
+                    res.label = html.find(`label[data-name="${key}"]`).attr('data-value');
+                }
+                if(html.find(`input[data-name="${key}_nameToggle"]`) != null) {
+                    res.showName = html.find(`input[data-name="${key}_nameToggle"]`)[0].checked;
+                }
+                res.icon = html.find(`img[data-key="${key}"]`).attr('src');
                 
                 await target.setFlag(RESTRACK_MODULENAME, key, res);
             }
@@ -219,6 +227,7 @@ class resourceTracker {
     /** @private */
     static async appendTrackField(html, entity, key, res) {
         const localizationPrefix = game.data.system.data.name.toUpperCase();
+        let toggleLabel = game.settings.get(RESTRACK_MODULENAME, RESTRACK_LABEL_SETTING);
         let resourceContainer = $('<div class="form-group"></div>');
 
         let localizedName = game.i18n.localize(`${localizationPrefix}.Resource${key.titleCase()}`);
@@ -228,24 +237,26 @@ class resourceTracker {
         }
 
         let checked = res?.tracked ?? false;
-
+        let resourceNameToggle = $(`<input type="checkbox" data-name="${key}_nameToggle" ${res?.showName ? 'checked' : ''} title="${game.i18n.localize('ResTrack.settings.token.alwaysShowName')}" />`);
+        let resourceIcon = $(`<img src="${res?.icon ?? ''}" data-key="${key}" data-name="${key}_icon" data-edit="img" width="36" height="36" />`);
+        
         if (key.includes('restrack_custom_')) {
             resourceContainer.addClass('resource-tracker-icon');
-            let resourceName = $(`<input type="text" data-name="${key}" placeholder="${game.i18n.localize('ResTrack.settings.token.addCustomPlaceholder')}" value="${res?.label ?? ''}"/>`);
-            let resourceNameToggle = $(`<input type="checkbox" data-name="${key}_nameToggle" ${res?.showName ? 'checked' : ''} title="${game.i18n.localize('ResTrack.settings.token.alwaysShowName')}" />`);
-            let resourceIcon = $(`<img src="${res?.icon ?? ''}" data-key="${key}" data-name="${key}_icon" data-edit="img" width="36" height="36" />`);
-
+            let resourceName = $(`<input type="text" data-name="${key}" placeholder="${game.i18n.localize('ResTrack.settings.token.addCustomPlaceholder')}" value="${res?.label ?? ''}" />`);
+            
             resourceIcon.on('click', (e) => {
                 let imgPath = $(e.target).attr('src');
 
                 resourceTracker.getResourceImg(html, $(e.target).attr('data-key'), imgPath);
             });
             resourceContainer.append(resourceName);
-            resourceContainer.append(resourceNameToggle);
             resourceContainer.append(resourceIcon);
         }
         else {
-            resourceContainer.append($(`<label>${localizedName + (res && res.label && res.label.length > 0 ? ` (${res.label})` : '')}</label>`));
+            resourceContainer.append($(`<label data-name="${key}" data-value="${res.label}">${localizedName + (res && res.label && res.label.length > 0 ? ` (${res.label})` : '')}</label>`));
+        }
+        if(toggleLabel) {
+            resourceContainer.append(resourceNameToggle);
         }
 
         let resourceFormfield = $('<div class="form-fields"></div>');
@@ -283,5 +294,14 @@ Hooks.on('init', () => {
             'left': game.i18n.localize('ResTrack.settings.trackerPositionLeft'),
             'right': game.i18n.localize('ResTrack.settings.trackerPositionRight'),
         }
+    });
+
+    game.settings.register(RESTRACK_MODULENAME, RESTRACK_LABEL_SETTING, {
+        name: game.i18n.localize('ResTrack.settings.labelToggle'),
+        hint: game.i18n.localize('ResTrack.settings.labelToggleHint'),
+        scope: 'client',
+        config: true,
+        type: Boolean,
+        default: false
     });
 });
