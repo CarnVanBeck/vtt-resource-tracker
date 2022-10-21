@@ -10,5 +10,7 @@
   "ResTrack.settings.token.newResource": "New resource",
   "ResTrack.settings.token.addCustom": "You can add custom resources to the token to track. (You can leave them unchecked if you don't need them, they are only added if checked.)",
   "ResTrack.settings.token.addCustomPlaceholder": "Name of you resource",
-  "ResTrack.settings.token.addCustomIconPlaceholder": "Image path"
+  "ResTrack.settings.token.addCustomIconPlaceholder": "Image path",
+  "ResTrack.settings.token.alwaysShowName": "Always show name",
+  "ResTrack.settings.token.trackResource": "Track"
 }

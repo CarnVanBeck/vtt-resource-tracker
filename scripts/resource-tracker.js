@@ -5,8 +5,8 @@ const RESTRACK_DEFAULT_ICON = 'icons/svg/cowled.svg';
 
 class resourceTracker {
     static async addTrackFields(app, html, data) {
-        let updateActor = app.object.document.data.actorLink;
-        let flags = app.object.document.actor.data.flags[RESTRACK_MODULENAME];
+        let updateActor = app.object.document.actorLink;
+        let flags = app.object.document.actor.flags[RESTRACK_MODULENAME];
 
         if(!flags || Object.entries(flags).length <= 0) {
             return;
@@ -39,9 +39,9 @@ class resourceTracker {
                 icon = res.icon;
             }
             else {
-                value = actor.data.data.resources[key].value;
-                max = actor.data.data.resources[key].max;
-                label = actor.data.data.resources[key].label;
+                value = actor.system.resources[key].value;
+                max = actor.system.resources[key].max;
+                label = actor.system.resources[key].label;
             }
             showName = res.showName;
             
@@ -91,7 +91,7 @@ class resourceTracker {
                 }
             }
             else {
-                actor.data.data.resources[key].value = value;
+                actor.system.resources[key].value = value;
             }
         })
     }
@@ -113,7 +113,7 @@ class resourceTracker {
 
         let excludeResources = [];
 
-        let flags = entity.token.actor.data.flags[RESTRACK_MODULENAME];
+        let flags = entity.token.actor.flags[RESTRACK_MODULENAME];
 
         //add custom resources from token if any exist
         if (flags && Object.entries(flags).length > 0) {
@@ -124,8 +124,8 @@ class resourceTracker {
         }
 
         //add resources from actor (only for PCs)
-        if (entity.actor.data.type == 'character') {
-            for (const [key, res] of Object.entries(entity.actor.data.data.resources)) {
+        if (entity.actor.type == 'character') {
+            for (const [key, res] of Object.entries(entity.actor.system.resources)) {
                 if (!excludeResources.includes(key)) {
                     resourceTracker.appendTrackField(html, entity, key, res);
                 }
@@ -212,6 +212,7 @@ class resourceTracker {
                 type: "image",
                 current: imgPath,
                 callback: path => {
+                    let testVar = html.find(`img[data-key=${key}]`);
                     html.find(`img[data-key=${key}]`).attr('src', path);
                 }
             }).browse(imgPath);
@@ -226,7 +227,7 @@ class resourceTracker {
 
     /** @private */
     static async appendTrackField(html, entity, key, res) {
-        const localizationPrefix = game.data.system.data.name.toUpperCase();
+        const localizationPrefix = game.data.system.id.toUpperCase();
         let toggleLabel = game.settings.get(RESTRACK_MODULENAME, RESTRACK_LABEL_SETTING);
         let resourceContainer = $('<div class="form-group"></div>');
 
@@ -238,7 +239,7 @@ class resourceTracker {
 
         let checked = res?.tracked ?? false;
         let resourceNameToggle = $(`<input type="checkbox" data-name="${key}_nameToggle" ${res?.showName ? 'checked' : ''} title="${game.i18n.localize('ResTrack.settings.token.alwaysShowName')}" />`);
-        let resourceIcon = $(`<img src="${res?.icon ?? ''}" data-key="${key}" data-name="${key}_icon" data-edit="img" width="36" height="36" />`);
+        let resourceIcon = $(`<img src="${res?.icon ?? ''}" data-key="${key}" data-name="${key}_icon" width="24" height="24" />`);
         
         if (key.includes('restrack_custom_')) {
             resourceContainer.addClass('resource-tracker-icon');
@@ -260,7 +261,7 @@ class resourceTracker {
         }
 
         let resourceFormfield = $('<div class="form-fields"></div>');
-        let resourceCheckbox = $(`<input type="checkbox" id="restrack_resource_${key}" data-name="${key}" ${checked ? 'checked' : ''} />`);
+        let resourceCheckbox = $(`<input type="checkbox" id="restrack_resource_${key}" data-name="${key}" ${checked ? 'checked' : ''} title="${game.i18n.localize('ResTrack.settings.token.trackResource')}" />`);
         resourceFormfield.append(resourceCheckbox);
         resourceContainer.append(resourceFormfield);
         html.find(`.tab[data-tab="resources"]`).append(resourceContainer);
