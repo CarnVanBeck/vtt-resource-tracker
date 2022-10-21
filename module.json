@@ -29,6 +29,8 @@
   "manifest": "https://raw.githubusercontent.com/CarnVanBeck/vtt-resource-tracker/master/module.json",
   "bugs": "https://github.com/CarnVanBeck/vtt-resource-tracker/issues",
   "allowBugReporter": true,
-  "minimumCoreVersion": "0.10",
-  "compatibleCoreVersion": "0.10"
+  "compatibility": {
+    "minimum": 10,
+    "verified": "10.286"
+  }
 }
