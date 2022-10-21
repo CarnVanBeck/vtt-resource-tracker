@@ -27,7 +27,7 @@
   ],
   "url": "https://github.com/CarnVanBeck/vtt-resource-tracker",
   "download": "https://github.com/CarnVanBeck/vtt-resource-tracker/releases/latest/download/module.zip",
-  "manifest": "https://raw.githubusercontent.com/CarnVanBeck/vtt-resource-tracker/master/module.json",
+  "manifest": "https://raw.githubusercontent.com/CarnVanBeck/vtt-resource-tracker/main/module.json",
   "bugs": "https://github.com/CarnVanBeck/vtt-resource-tracker/issues",
   "allowBugReporter": true,
   "compatibility": {
