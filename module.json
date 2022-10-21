@@ -26,7 +26,6 @@
     "/styles/resource-tracker.css"
   ],
   "url": "https://github.com/CarnVanBeck/vtt-resource-tracker",
-  "download": "https://github.com/CarnVanBeck/vtt-resource-tracker/archive/v0.9.zip",
   "manifest": "https://raw.githubusercontent.com/CarnVanBeck/vtt-resource-tracker/master/module.json",
   "bugs": "https://github.com/CarnVanBeck/vtt-resource-tracker/issues",
   "allowBugReporter": true,
