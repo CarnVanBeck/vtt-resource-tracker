@@ -1,37 +1,36 @@
 {
-  "name": "vtt-resource-tracker",
-  "title": "Resource Tracker",
-  "description": "Allows you to track resources on the token hud",
-  "version": "1.0",
-  "author": "CarnVanBeck",
-  "socket": false,
-  "languages": [
-    {
-      "lang": "de",
-      "name": "German",
-      "path": "lang/de.json"
+    "title": "Resource Tracker",
+    "description": "Allows you to track resources on the token hud",
+    "version": "1.1",
+    "languages": [
+        {
+            "lang": "de",
+            "name": "German",
+            "path": "lang/de.json",
+            "flags": {}
+        },
+        {
+            "lang": "en",
+            "name": "English",
+            "path": "lang/en.json",
+            "flags": {}
+        }
+    ],
+    "scripts": ["/scripts/resource-tracker.js"],
+    "styles": ["/styles/resource-tracker.css"],
+    "url": "https://github.com/CarnVanBeck/vtt-resource-tracker",
+    "manifest": "https://raw.githubusercontent.com/CarnVanBeck/vtt-resource-tracker/main/module.json",
+    "bugs": "https://github.com/CarnVanBeck/vtt-resource-tracker/issues",
+    "id": "vtt-resource-tracker",
+    "authors": [
+        {
+            "name": "CarnVanBeck",
+            "flags": {}
+        }
+    ],
+    "compatibility": {
+        "minimum": "10",
+        "verified": "10.291"
     },
-    {
-      "lang": "en",
-      "name": "English",
-      "path": "lang/en.json"
-    }
-  ],
-  "packs": [],
-  "esmodules": [],
-  "scripts": [
-    "/scripts/resource-tracker.js"
-  ],
-  "styles": [
-    "/styles/resource-tracker.css"
-  ],
-  "url": "https://github.com/CarnVanBeck/vtt-resource-tracker",
-  "download": "https://github.com/CarnVanBeck/vtt-resource-tracker/releases/latest/download/module.zip",
-  "manifest": "https://raw.githubusercontent.com/CarnVanBeck/vtt-resource-tracker/main/module.json",
-  "bugs": "https://github.com/CarnVanBeck/vtt-resource-tracker/issues",
-  "allowBugReporter": true,
-  "compatibility": {
-    "minimum": 10,
-    "verified": "10.286"
-  }
+    "download": "https://github.com/CarnVanBeck/vtt-resource-tracker/releases/latest/download/module.zip"
 }
